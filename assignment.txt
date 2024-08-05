@@ -37,73 +37,92 @@ Question: Describe and discuss the use case of following:
 
 
 
-// C program for producer consumer problem
-
 #include <stdio.h>
 #include <stdlib.h>
 
-//initialize a mutex to 1
+// Initialize a mutex to 1
 int mutex = 1;
 
-//number full of slots as 0
-int full =0;
+// Number of full slots as 0
+int full = 0;
 
-//number pr empty slots as size of buffer
-int empty = 10,x=0;
+// Number of empty slots as size of buffer
+int empty = 10, x = 0;
 
-//functoin to produce an item and add it to the buffer
-
-void(){
-    --mutex;  //decrease mutex by 1
-    ++full;    //increase number of full slots by 1
-    --empty;   //decrease empty slots
-    x++;
-    printf("\n Producer produces item %d",x);
-
-    ++mutex;
-}
-
-//function to consume an item and remove buffer
-
-void consumer(){
+// Function to produce an item and add it to the buffer
+void producer() {
+    // Decrease mutex value by 1
     --mutex;
-    --full;
-    ++empty;
-    printf("\n Consumer consumes" "item %d" ,x);
-    x--;
+
+    // Increase the number of full slots by 1
+    ++full;
+
+    // Decrease the number of empty slots by 1
+    --empty;
+
+    // Item produced
+    x++;
+    printf("\nProducer produces item %d", x);
+
+    // Increase mutex value by 1
     ++mutex;
 }
 
-int main(){
-    int n,i'
-    printf("\n 1. Press 1 for Producer");
-    printf("\n 2. Press 2 for Consumer");
-    printf("\n 3. Press 3 for Exit");
+// Function to consume an item and remove it from buffer
+void consumer() {
 
-    printf("\n Enter your choice:");
-    scanf("%d",&n);
-    //switch cases
-    switch(n){
-    case 1:
-          if((mutex ==1)) && (empty !=0)){
-          producer();} 
-           }
-          else{
-          printf("Buffer is full");
-          }
-          break;
+    --mutex;       // Decrease mutex value by 1
+    --full;        // Decrease the number of full slots by 1
+    ++empty;      // Increase the number of empty slots by 1
+
+    printf("\nConsumer consumes item %d", x);
+    x--;
+
+    // Increase mutex value by 1
+    ++mutex;
+}
+
+int main() {
+    int n, i;
+
+    printf("\n1. Press 1 for Producer\n2. Press 2 for Consumer\n3. Press 3 for Exit");
+
+    // Using '#pragma omp parallel for' can give wrong value due to synchronization issues.
+    // 'critical' specifies that code is executed by only one thread at a time i.e., only one thread enters the critical section at a given time
+    #pragma omp critical
     
-    case 2:
-          if((mutex == 1) && (full !=0)){
-          consumer();}
-          else{
-          printf("Buffer is empty!");
-          }
-          break;
+    for (i = 1; i > 0; i++) {
+        printf("\nEnter your choice:");
+        scanf("%d", &n);
 
-    case 3:
-          exit(0);
-          break;
+        // Switch Cases
+        switch (n) {
+            case 1:
+                // If mutex is 1 and empty is non-zero, then it is possible to produce
+                if ((mutex == 1) && (empty != 0)) {
+                    producer();
+                }
+                // Otherwise, print buffer is full
+                else {
+                    printf("Buffer is full!");
+                }
+                break;
+
+            case 2:
+                // If mutex is 1 and full is non-zero, then it is possible to consume
+                if ((mutex == 1) && (full != 0)) {
+                    consumer();
+                }
+                // Otherwise, print buffer is empty
+                else {
+                    printf("Buffer is empty!");
+                }
+                break;
+
+            // Exit Condition
+            case 3:
+                exit(0);
+                break;
+        }
     }
-
 }
