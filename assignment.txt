@@ -37,6 +37,9 @@ Question: Describe and discuss the use case of following:
 
 
 
+
+//C program demonstrating the producer-consumer problem using mutexes
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -90,7 +93,7 @@ int main() {
     // Using '#pragma omp parallel for' can give wrong value due to synchronization issues.
     // 'critical' specifies that code is executed by only one thread at a time i.e., only one thread enters the critical section at a given time
     #pragma omp critical
-    
+
     for (i = 1; i > 0; i++) {
         printf("\nEnter your choice:");
         scanf("%d", &n);
